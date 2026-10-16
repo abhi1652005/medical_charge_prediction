@@ -8,7 +8,7 @@ app = Flask(__name__)
 with open('l_model.pkl', 'rb') as f:
     model = pickle.load(f)
 
-# Modern UI Design Template contained directly within app.py
+# Attractive Dark-Mode Gradient UI Design Template
 HTML_TEMPLATE = """
 <!DOCTYPE html>
 <html lang="en">
@@ -16,55 +16,65 @@ HTML_TEMPLATE = """
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Medical Insurance Cost Estimator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #4F46E5;
-            --primary-hover: #4338CA;
-            --bg: #F3F4F6;
-            --card-bg: #FFFFFF;
-            --text-main: #1F2937;
-            --text-muted: #6B7280;
-            --border: #E5E7EB;
-            --accent-green: #059669;
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #311042 100%);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --input-bg: rgba(15, 23, 42, 0.6);
+            --input-border: rgba(255, 255, 255, 0.12);
+            --accent-green: #10b981;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
         body {
-            background-color: var(--bg);
+            background: var(--bg-gradient);
+            background-attachment: fixed;
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 24px;
         }
 
         .card {
             background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
             width: 100%;
-            max-width: 480px;
-            padding: 32px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            max-width: 500px;
+            padding: 36px;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
         .header {
             text-align: center;
-            margin-bottom: 28px;
+            margin-bottom: 32px;
         }
 
         .header h1 {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 700;
             color: var(--text-main);
             margin-bottom: 8px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .header p {
@@ -75,7 +85,7 @@ HTML_TEMPLATE = """
         .form-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
+            gap: 18px;
         }
 
         .full-width {
@@ -89,93 +99,102 @@ HTML_TEMPLATE = """
 
         label {
             font-size: 13px;
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text-muted);
+            margin-bottom: 8px;
         }
 
         input, select {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border);
-            border-radius: 8px;
+            padding: 12px 14px;
+            border: 1px solid var(--input-border);
+            border-radius: 12px;
             font-size: 14px;
             color: var(--text-main);
-            background-color: #FAFAFA;
+            background-color: var(--input-bg);
             outline: none;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
         }
 
         input:focus, select:focus {
             border-color: var(--primary);
-            background-color: #FFFFFF;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+            background-color: rgba(15, 23, 42, 0.8);
+        }
+
+        select option {
+            background-color: #1e293b;
+            color: var(--text-main);
         }
 
         button {
             width: 100%;
-            padding: 12px;
-            background-color: var(--primary);
+            padding: 14px;
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 15px;
+            border-radius: 12px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
-            margin-top: 20px;
+            transition: all 0.3s ease;
+            margin-top: 24px;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
         }
 
         button:hover {
-            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
         }
 
         button:active {
-            transform: scale(0.98);
+            transform: translateY(0);
         }
 
         .result-box {
             margin-top: 24px;
-            padding: 16px;
-            border-radius: 12px;
-            background-color: #ECFDF5;
-            border: 1px solid #A7F3D0;
+            padding: 20px;
+            border-radius: 16px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.3);
             text-align: center;
             display: none;
         }
 
         .result-box.active {
             display: block;
-            animation: fadeIn 0.3s ease;
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .result-title {
             font-size: 13px;
             font-weight: 500;
-            color: #065F46;
-            margin-bottom: 4px;
+            color: #34d399;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .result-price {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: 700;
-            color: var(--accent-green);
+            color: #6ee7b7;
         }
 
         .error-box {
             margin-top: 24px;
-            padding: 12px;
-            border-radius: 8px;
-            background-color: #FEF2F2;
-            border: 1px solid #FCA5A5;
-            color: #991B1B;
+            padding: 14px;
+            border-radius: 12px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
             font-size: 13px;
             text-align: center;
             display: none;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -186,6 +205,9 @@ HTML_TEMPLATE = """
             .full-width {
                 grid-column: span 1;
             }
+            .card {
+                padding: 24px;
+            }
         }
     </style>
 </head>
@@ -193,8 +215,8 @@ HTML_TEMPLATE = """
 
     <div class="card">
         <div class="header">
-            <h1>Medical Charge Predictor</h1>
-            <p>Enter individual details to estimate medical expenses</p>
+            <h1>Medical Expense Predictor</h1>
+            <p>Advanced AI model estimation for healthcare costs</p>
         </div>
 
         <form id="prediction-form">
@@ -219,7 +241,7 @@ HTML_TEMPLATE = """
 
                 <div class="form-group">
                     <label for="children">Children</label>
-                    <input type="number" id="children" required value="1" placeholder="e.g. 0">
+                    <input type="number" id="children" required value="1" placeholder="e.g. 1">
                 </div>
 
                 <div class="form-group full-width">
@@ -245,7 +267,7 @@ HTML_TEMPLATE = """
         </form>
 
         <div class="result-box" id="result-box">
-            <div class="result-title">Estimated Annual Medical Expense</div>
+            <div class="result-title">Estimated Annual Expense</div>
             <div class="result-price" id="prediction-text">$0.00</div>
         </div>
 
@@ -321,25 +343,3 @@ def predict():
         smoker = 1 if str(data['smoker']).strip().lower() in ['yes', 'true', '1'] else 0
         
         region_map = {
-            'northeast': 0,
-            'northwest': 1,
-            'southeast': 2,
-            'southwest': 3
-        }
-        region = region_map.get(str(data['region']).strip().lower(), 2)
-        
-        features = [age, sex, bmi, children, smoker, region]
-        prediction = model.predict([features])
-        
-        return jsonify({
-            'success': True,
-            'prediction': float(prediction[0])
-        })
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'error': str(e)
-        }), 400
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
