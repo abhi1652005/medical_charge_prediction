@@ -8,8 +8,8 @@ app = Flask(__name__)
 with open('l_model.pkl', 'rb') as f:
     model = pickle.load(f)
 
-# Attractive Dark-Mode Gradient UI Design Template
-HTML_TEMPLATE = """
+# Using 'r' before the quotes treats all curly braces as literal text (fixes SyntaxError)
+HTML_TEMPLATE = r"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -343,3 +343,25 @@ def predict():
         smoker = 1 if str(data['smoker']).strip().lower() in ['yes', 'true', '1'] else 0
         
         region_map = {
+            'northeast': 0,
+            'northwest': 1,
+            'southeast': 2,
+            'southwest': 3
+        }
+        region = region_map.get(str(data['region']).strip().lower(), 2)
+        
+        features = [age, sex, bmi, children, smoker, region]
+        prediction = model.predict([features])
+        
+        return jsonify({
+            'success': True,
+            'prediction': float(prediction[0])
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 400
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
